@@ -3,10 +3,6 @@ jersey-login
 
 Full Featured Login Page for Jersey
 
-### What's missing
-- Logout
-- Secured main.jsp
-
 ### Useful links
 - http://stackoverflow.com/questions/41107/how-to-generate-a-random-alpha-numeric-string
 - http://api.jquery.com/jquery.ajax/
@@ -17,3 +13,5 @@ Full Featured Login Page for Jersey
 - https://www.sqlite.org/autoinc.html
 - http://www.coderanch.com/t/303346/JDBC/databases/find-number-rows-resultset
 - https://code.google.com/p/cookies
+- http://nbartlomiej.github.io/foggy/
+- http://fgnass.github.io/spin.js/
