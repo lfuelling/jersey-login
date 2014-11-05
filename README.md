@@ -16,3 +16,4 @@ Full Featured Login Page for Jersey
 - http://www.tutorialspoint.com/sqlite/sqlite_java.htm
 - https://www.sqlite.org/autoinc.html
 - http://www.coderanch.com/t/303346/JDBC/databases/find-number-rows-resultset
+- https://code.google.com/p/cookies
