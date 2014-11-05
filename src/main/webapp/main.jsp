@@ -9,7 +9,7 @@
     <meta name="author" content="">
     <link rel="icon" href="img/favicon.ico">
 
-    <title>Starter Template for Bootstrap</title>
+    <title>Secured Homepage</title>
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -25,8 +25,10 @@
 </head>
 
 <body>
-
-<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+<div id="loader"></div>
+<div id="page">
+    <a href="https://github.com/lfuelling/jersey-login"><img style="z-index: 9999; position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -35,13 +37,13 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Project name</a>
+            <a class="navbar-brand" href="#">LoginPage</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li class="active"><a href="#">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="https://github.com/lfuelling/jersey-login">About</a></li>
+                <li><a href="https://twitter.com/kellagroup">Contact</a></li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>
@@ -50,12 +52,12 @@
 <div class="container">
 
     <div class="starter-template">
-        <h1>Bootstrap starter template</h1>
-        <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
+        <h1>Secured area</h1>
+        <p class="lead">Everyone who isn't logged in (or manually set the <code>token</code> Cookie) will be redirected to the login page.</p>
     </div>
 
 </div><!-- /.container -->
-
+</div><!-- /#page -->
 
 <!-- Bootstrap core JavaScript
 ================================================== -->
@@ -63,7 +65,56 @@
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/jquery.cookies.min.js"></script>
+<script src="js/jquery.foggy.min.js"></script>
+<script src="js/spin.min.js"></script>
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <script src="js/ie10-viewport-bug-workaround.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#page').foggy();
+        var opts = {
+            lines: 17, // The number of lines to draw
+            length: 40, // The length of each line
+            width: 2, // The line thickness
+            radius: 60, // The radius of the inner circle
+            corners: 1, // Corner roundness (0..1)
+            rotate: 0, // The rotation offset
+            direction: 1, // 1: clockwise, -1: counterclockwise
+            color: '#000', // #rgb or #rrggbb or array of colors
+            speed: 1.5, // Rounds per second
+            trail: 64, // Afterglow percentage
+            shadow: false, // Whether to render a shadow
+            hwaccel: false, // Whether to use hardware acceleration
+            className: 'spinner', // The CSS class to assign to the spinner
+            zIndex: 2e9, // The z-index (defaults to 2000000000)
+            top: '50%', // Top position relative to parent
+            left: '50%' // Left position relative to parent
+        };
+        var target = document.getElementById('loader');
+        var spinner = new Spinner(opts).spin(target);
+        var token = $.cookies.get("token");
+        if (token == null) {
+            window.location.href = "index.jsp";
+        } else {
+            $.ajax({
+                url: "webapi/login/check",
+                type: "POST",
+                data: token,
+                contentType: "text/plain; charset=utf-8",
+                dataType: "text",
+                success: function (data) {
+                    if (data == "false") {
+                        $.cookies.del("token");
+                    } else if (data == "true") {
+                        $('#page').foggy(false);
+                        spinner.stop();
+                        $('#loader').hide();
+                    }
+                }
+            });
+        }
+    });
+</script>
+
 </body>
 </html>

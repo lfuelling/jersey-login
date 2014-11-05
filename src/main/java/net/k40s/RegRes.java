@@ -19,7 +19,6 @@ import java.util.Date;
 @Path("register")
 public class RegRes {
   private SecureRandom random = new SecureRandom();
-  private final String DATABASE = "jdbc:sqlite:src/main/resources/users.db";
 
   @POST
   @Consumes(MediaType.TEXT_PLAIN)
@@ -39,7 +38,7 @@ public class RegRes {
     Statement stmt = null;
     try {
       Class.forName("org.sqlite.JDBC");
-      c = DriverManager.getConnection(DATABASE);
+      c = DriverManager.getConnection(Consts.DATABASE);
     } catch(Exception e) {
       System.err.println(e.getClass().getName() + ": " + e.getMessage());
     }
@@ -65,7 +64,7 @@ public class RegRes {
       stmt.close();
       c.close();
       Class.forName("org.sqlite.JDBC");
-      c = DriverManager.getConnection(DATABASE);
+      c = DriverManager.getConnection(Consts.DATABASE);
       c.setAutoCommit(false);
       stmt = c.createStatement();
       String token = nextSessionId();

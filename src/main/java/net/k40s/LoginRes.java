@@ -2,12 +2,9 @@ package net.k40s;
 
 import javax.ws.rs.*;
 import java.math.BigInteger;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.security.*;
 import java.sql.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 
 
@@ -17,7 +14,7 @@ import javax.ws.rs.core.Response;
 @Path("login")
 public class LoginRes {
   private SecureRandom random = new SecureRandom();
-  private final String DATABASE = "jdbc:sqlite:src/main/resources/users.db";
+  
 
   /**
    * Method handling HTTP GET requests. The returned object will be sent
@@ -44,7 +41,7 @@ public class LoginRes {
     Statement stmt = null;
     try {
       Class.forName("org.sqlite.JDBC");
-      c = DriverManager.getConnection(DATABASE);
+      c = DriverManager.getConnection(Consts.DATABASE);
       c.setAutoCommit(false);
 
       stmt = c.createStatement();
@@ -66,9 +63,9 @@ public class LoginRes {
       java.util.Date date = new java.util.Date();
       try {
         Class.forName("org.sqlite.JDBC");
-        c = DriverManager.getConnection(DATABASE);
+        c = DriverManager.getConnection(Consts.DATABASE);
         c.setAutoCommit(false);
-        System.out.println("Opened database successfully");
+        System.out.println("Opened Consts.DATABASE successfully");
 
         stmt = c.createStatement();
         String sql = "UPDATE USERS set LASTT = '" + token + "' where ID="+ id +";";
@@ -105,7 +102,7 @@ public class LoginRes {
     Statement stmt = null;
     try {
       Class.forName("org.sqlite.JDBC");
-      c = DriverManager.getConnection(DATABASE);
+      c = DriverManager.getConnection(Consts.DATABASE);
       c.setAutoCommit(false);
 
       stmt = c.createStatement();
@@ -126,6 +123,38 @@ public class LoginRes {
       System.err.println( e.getClass().getName() + ": " + e.getMessage() );
     }
     if(restore){
+      return "true";
+    } else {
+      return "false";
+    }
+  }
+
+  @Path("check")
+  @POST
+  @Consumes(MediaType.TEXT_PLAIN)
+  @Produces(MediaType.TEXT_PLAIN)
+  public String checkSession(String token) {
+    boolean success = false;
+
+    Connection c = null;
+    Statement stmt = null;
+    try {
+      Class.forName("org.sqlite.JDBC");
+      c = DriverManager.getConnection(Consts.DATABASE);
+      c.setAutoCommit(false);
+
+      stmt = c.createStatement();
+      ResultSet rs = stmt.executeQuery( "SELECT * FROM USERS WHERE LASTT = '" + token + "';" );
+      while ( rs.next() ) {
+        success = true;
+      }
+      rs.close();
+      stmt.close();
+      c.close();
+    } catch ( Exception e ) {
+      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+    }
+    if(success){
       return "true";
     } else {
       return "false";
